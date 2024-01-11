@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         PrUn Tooltips by Rynx
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Adds FIO powered market tooltips to Apex console
-// @author       Manderius (Rynx), inspired by Tim Davis (binarygod, @timthedevguy)
+// @author       Manderius (Rynx), inspired by Tim Davis (binarygod, @timthedevguy), and modified by Booers
 // @match        https://apex.prosperousuniverse.com/
 // @grant        none
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js
-// @downloadURL  https://raw.githubusercontent.com/Manderius/PrUn_Tooltips/main/tooltips.js
-// @updateURL    https://raw.githubusercontent.com/Manderius/PrUn_Tooltips/main/tooltips.js
+// @downloadURL  https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
+// @updateURL    https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
 // ==/UserScript==
 
 let $ = jQuery;

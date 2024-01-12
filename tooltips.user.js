@@ -18,7 +18,66 @@ let $ = jQuery;
 let prices = [];
 let last_update = null;
 let updates_on = null;
-const styles = '.prun-tooltip-base{display:flex;pointer-events:none;position:absolute!important;font-family:"Droid Sans",sans-serif;font-size:10px;color:#bbb;z-index:100000;}.prun-tooltip-box{flex:1 1 auto}.prun-tooltip-content{box-sizing:border-box;max-height:100%;max-width:100%;overflow:auto}.prun-tooltip-fade{opacity:0;-webkit-transition-property:opacity;-moz-transition-property:opacity;-o-transition-property:opacity;-ms-transition-property:opacity;transition-property:opacity}.prun-tooltip-fade.prun-tooltip-show{opacity:1}.prun-tooltip-sidetip .prun-tooltip-box{background:#222;border:1px solid #2b485a;box-shadow:0 0 5px rgba(63,162,222,.5);border-radius:0}.prun-tooltip-sidetip.prun-tooltip-right .prun-tooltip-box{margin-left:0}.prun-tooltip-sidetip .prun-tooltip-content{line-height:10px;padding:0}.prun-tooltip-sidetip .prun-tooltip-arrow{overflow:hidden;display:none;position:absolute}.prun-tooltip-content H1{border-bottom:1px solid #2b485a;background-color:rgba(63,162,222,.15);padding-bottom:8px;padding-top:9px;padding-left:10px;margin:0;font-weight:400;padding-right:10px;font-size:12px}';
+
+const styles = `
+.prun-tooltip-base {
+	display: flex;
+	pointer-events: none;
+	position: absolute !important;
+	font-family: "Droid Sans",sans-serif;
+	font-size: 10px;
+	color: #bbb;
+	z-index: 100000;
+}
+.prun-tooltip-box {
+	flex: 1 1 auto;
+}
+.prun-tooltip-content {
+	box-sizing: border-box;
+	max-height: 100%;
+	max-width: 100%;
+	overflow: auto;
+}
+.prun-tooltip-fade {
+	opacity: 0;
+	-webkit-transition-property: opacity;
+	-moz-transition-property: opacity;
+	-o-transition-property: opacity;
+	-ms-transition-property: opacity;
+	transition-property: opacity;
+}
+.prun-tooltip-fade.prun-tooltip-show {
+	opacity: 1;
+}
+.prun-tooltip-sidetip .prun-tooltip-box {
+	background: #222;
+	border: 1px solid #2b485a;
+	box-shadow: 0 0 5px rgba(63,162,222,.5);
+	border-radius: 0;
+}
+.prun-tooltip-sidetip.prun-tooltip-right .prun-tooltip-box {
+	margin-left: 0;
+}
+.prun-tooltip-sidetip .prun-tooltip-content {
+	line-height: 10px;
+	padding: 0;
+}
+.prun-tooltip-sidetip .prun-tooltip-arrow {
+	overflow: hidden;
+	display: none;
+	position: absolute;
+}
+.prun-tooltip-content h1 {
+	border-bottom: 1px solid #2b485a;
+	background-color: rgba(63,162,222,.15);
+	padding: 9px 10px 8px 10px;
+	margin: 0;
+	font-weight: 400;
+	font-size: 12px;
+}
+`;
+
+
 const tooltip_html = `
 <div class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show">
   <div class="prun-tooltip-box" style="margin: 0px">
@@ -83,6 +142,7 @@ const tooltip_html = `
   </div>
 </div>
 `;
+
 const tooltip_html_nodata = `
 <div class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show">
   <div class="prun-tooltip-box" style="margin: 0px">

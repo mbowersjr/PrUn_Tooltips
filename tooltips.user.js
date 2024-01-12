@@ -1,26 +1,21 @@
 // ==UserScript==
-// @name         PrUn Tooltips by Rynx
+// @name         PrUn Tooltips by Rynx (Modified)
 // @namespace    http://tampermonkey.net/
 // @version      2.1
 // @description  Adds FIO powered market tooltips to Apex console
 // @author       Manderius (Rynx), inspired by Tim Davis (binarygod, @timthedevguy), and modified by Booers
 // @match        https://apex.prosperousuniverse.com/
 // @grant        none
-// @require      http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js
-// @downloadURL  https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
-// @updateURL    https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
+// @require      https://code.jquery.com/jquery-3.7.1.min.js#sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=
 // ==/UserScript==
 
 let $ = jQuery;
 let prices = [];
 let last_update = null;
 let updates_on = null;
-const styles =
-    '.prun-tooltip-base{display:flex;pointer-events:none;position:absolute!important;font-family:"Droid Sans",sans-serif;font-size:10px;color:#bbb;z-index:100000;}.prun-tooltip-box{flex:1 1 auto}.prun-tooltip-content{box-sizing:border-box;max-height:100%;max-width:100%;overflow:auto}.prun-tooltip-fade{opacity:0;-webkit-transition-property:opacity;-moz-transition-property:opacity;-o-transition-property:opacity;-ms-transition-property:opacity;transition-property:opacity}.prun-tooltip-fade.prun-tooltip-show{opacity:1}.prun-tooltip-sidetip .prun-tooltip-box{background:#222;border:1px solid #2b485a;box-shadow:0 0 5px rgba(63,162,222,.5);border-radius:0}.prun-tooltip-sidetip.prun-tooltip-right .prun-tooltip-box{margin-left:0}.prun-tooltip-sidetip .prun-tooltip-content{line-height:10px;padding:0}.prun-tooltip-sidetip .prun-tooltip-arrow{overflow:hidden;display:none;position:absolute}.prun-tooltip-content H1{border-bottom:1px solid #2b485a;background-color:rgba(63,162,222,.15);padding-bottom:8px;padding-top:9px;padding-left:10px;margin:0;font-weight:400;padding-right:10px;font-size:12px}';
+const styles = '.prun-tooltip-base{display:flex;pointer-events:none;position:absolute!important;font-family:"Droid Sans",sans-serif;font-size:10px;color:#bbb;z-index:100000;}.prun-tooltip-box{flex:1 1 auto}.prun-tooltip-content{box-sizing:border-box;max-height:100%;max-width:100%;overflow:auto}.prun-tooltip-fade{opacity:0;-webkit-transition-property:opacity;-moz-transition-property:opacity;-o-transition-property:opacity;-ms-transition-property:opacity;transition-property:opacity}.prun-tooltip-fade.prun-tooltip-show{opacity:1}.prun-tooltip-sidetip .prun-tooltip-box{background:#222;border:1px solid #2b485a;box-shadow:0 0 5px rgba(63,162,222,.5);border-radius:0}.prun-tooltip-sidetip.prun-tooltip-right .prun-tooltip-box{margin-left:0}.prun-tooltip-sidetip .prun-tooltip-content{line-height:10px;padding:0}.prun-tooltip-sidetip .prun-tooltip-arrow{overflow:hidden;display:none;position:absolute}.prun-tooltip-content H1{border-bottom:1px solid #2b485a;background-color:rgba(63,162,222,.15);padding-bottom:8px;padding-top:9px;padding-left:10px;margin:0;font-weight:400;padding-right:10px;font-size:12px}';
 const tooltip_html = `
-<div
-  class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show"
->
+<div class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show">
   <div class="prun-tooltip-box" style="margin: 0px">
     <div class="prun-tooltip-content">
       <div class="PrUn_tooltip_content">
@@ -84,9 +79,7 @@ const tooltip_html = `
 </div>
 `;
 const tooltip_html_nodata = `
-<div
-  class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show"
->
+<div class="prun-tooltip-base prun-tooltip-sidetip prun-tooltip-right prun-tooltip-fade prun-tooltip-show">
   <div class="prun-tooltip-box" style="margin: 0px">
     <div class="prun-tooltip-content">
       <div class="PrUn_tooltip_content">
@@ -98,43 +91,44 @@ const tooltip_html_nodata = `
 `;
 
 function getPrices(callback) {
-    // Check if last_update is null or if now is past the updates on
-    if (!last_update || new Date() > updates_on) {
-        // Get market data from FIO
-        $.ajax({
-            type: "GET",
-            url: "https://rest.fnar.net/exchange/all",
-            success: function (output, status, xhr) {
-                // Grab data
-                prices = output;
-                // Set last update to now
-                last_update = new Date();
-                // Set updates_on to 5 minutes from now
-                updates_on = new Date(last_update.getTime() + 5 * 60000);
-
-                callback(output);
-            },
-            error: function () {
-                console.log("Error in API call");
-            },
-        });
-    } else {
-        // No update needed go ahead and parse the data
+    // Check if now is past the updates_on
+    if (last_update && new Date() > updates_on) {
         callback(prices);
+        return;
     }
+
+    // Get market data from FIO
+    $.ajax({
+        type: "GET",
+        url: "https://rest.fnar.net/exchange/all",
+        success: function (output, status, xhr) {
+            // Grab data
+            prices = output;
+            // Set last update to now
+            last_update = new Date();
+            // Set updates_on to 5 minutes from now
+            updates_on = new Date(last_update.getTime() + 5 * 60000);
+
+            callback(output);
+        },
+        error: function () {
+            console.log("Error in API call");
+        }
+    });
 }
 
 function generateTooltipContent(ticker, title) {
-    let html = tooltip_html.replace("{UPDATE}", updates_on.toLocaleString());
     // Find Material in FIO data
-    let market_data = prices.filter((obj) => {
-        return obj.MaterialTicker === ticker;
-    });
+    let market_data = prices.filter((obj) => obj.MaterialTicker === ticker);
+
     if (market_data.length === 0) {
-        return createElement(tooltip_html_nodata.replace("{TITLE}", title));
+        return $(tooltip_html_nodata.replace("{TITLE}", title));
     }
+
+    let html = tooltip_html.replace("{UPDATE}", updates_on.toLocaleString());
+
     // Filter should return all 4 markets worth of data, populate our tooltip
-    market_data.forEach(function (ticker_data) {
+    market_data.forEach((ticker_data) => {
         html = html.replace(
             `{Ask.${ticker_data.ExchangeCode}}`,
             ticker_data.Ask ? ticker_data.Ask.toLocaleString() : "null"
@@ -145,9 +139,7 @@ function generateTooltipContent(ticker, title) {
         );
         html = html.replace(
             `{Avg.${ticker_data.ExchangeCode}}`,
-            ticker_data.PriceAverage
-                ? ticker_data.PriceAverage.toLocaleString()
-                : "null"
+            ticker_data.PriceAverage ? ticker_data.PriceAverage.toLocaleString() : "null"
         );
         html = html.replace(
             `{Supply.${ticker_data.ExchangeCode}}`,
@@ -159,81 +151,92 @@ function generateTooltipContent(ticker, title) {
         );
         html = html.replace(`{TITLE}`, title);
     });
+
     // Replace any nulls with '--'
     html = html.replaceAll("null", "--");
-    return createElement(html);
-}
 
-function createElement(html) {
-    var div = document.createElement("div");
-    div.innerHTML = html.trim();
-    return div.firstChild;
+    return $(html).attr("id", `tooltip_${ticker}`);;
 }
 
 function showTooltip(item, ticker) {
-    if ($(`#tooltip_${ticker}`).length > 0) {
-        return document.getElementById(`tooltip_${ticker}`);
+    let existing = $(`#tooltip_${ticker}`);
+    if (existing.length > 0) {
+        return existing;
     }
-    const title = $(item).attr("title");
+
+    const title = $(item).parent().attr("title");
     const content = generateTooltipContent(ticker, title);
-    content.id = `tooltip_${ticker}`;
 
     // Positioning
-    document.body.appendChild(content);
+    $("body").append(content);
 
-    const positionFromLeft =
-        item.getBoundingClientRect().right + item.offsetWidth / 6;
-    const canFitOnRight =
-        positionFromLeft + content.offsetWidth < window.innerWidth;
+    let contentElem = $(content).get(0);
+    let itemElem = $(item).get(0);
+
+    const positionFromLeft = itemElem.getBoundingClientRect().right + itemElem.offsetWidth / 6;
+    const canFitOnRight = positionFromLeft + contentElem.offsetWidth < window.innerWidth;
     if (canFitOnRight) {
-        content.style.left = positionFromLeft + "px";
-    } else {
-        content.style.left =
-            item.getBoundingClientRect().left -
-            item.offsetWidth / 6 -
-            content.offsetWidth +
-            "px";
+        contentElem.style.left = positionFromLeft + "px";
+    }
+    else {
+        contentElem.style.left = itemElem.getBoundingClientRect().left - itemElem.offsetWidth / 6 - contentElem.offsetWidth + "px";
     }
 
-    let positionFromTop =
-        item.getBoundingClientRect().top +
-        item.offsetHeight / 2 -
-        content.offsetHeight / 2;
-    const doesBottomOverflow =
-        positionFromTop + content.offsetHeight > window.innerHeight;
+    let positionFromTop = itemElem.getBoundingClientRect().top + itemElem.offsetHeight / 2 - contentElem.offsetHeight / 2;
+    const doesBottomOverflow = positionFromTop + contentElem.offsetHeight > window.innerHeight;
     const doesTopOverflow = positionFromTop < 0;
+
     if (doesBottomOverflow) {
-        content.style.top =
-            window.innerHeight - content.offsetHeight - 3 + "px";
-    } else if (doesTopOverflow) {
-        content.style.top = "3px";
-    } else {
-        content.style.top = positionFromTop + "px";
+        contentElem.style.top = window.innerHeight - contentElem.offsetHeight - 3 + "px";
+    }
+    else if (doesTopOverflow) {
+        contentElem.style.top = "3px";
+    }
+    else {
+        contentElem.style.top = positionFromTop + "px";
     }
 
     return content;
 }
 
 function hideTooltip(tooltip) {
-    tooltip.remove();
+    $(tooltip).remove();
 }
 
-function addEventListenersToItems(items) {
-    items.forEach((item) => {
-        const ticker = $(item).find(".ColoredIcon__label___OU1I4oP").text();
-        $(item).children().attr("title", "");
-        let tooltip;
-        item.addEventListener("mouseover", () => {
-            tooltip = showTooltip(item, ticker);
-        });
-        item.addEventListener("mouseout", () => {
-            hideTooltip(tooltip);
-        });
+function bindEventListeners() {
+    const insideFrameSelector = ".ColoredIcon__container___djaR4r2";
+
+    // $(insideFrameSelector).attr("title", "");
+
+    let tooltip;
+    let openTimer, closeTimer;
+    const showDelay = 500, hideDelay = 500;
+
+    $("body").on("mouseenter", insideFrameSelector, (event) => {
+        if (!event.shiftKey) return;
+
+        let thisItem = $(event.target);
+        let ticker = $(".ColoredIcon__label___OU1I4oP", thisItem).text();
+
+        clearTimeout(closeTimer);
+        $(tooltip).remove();
+
+        openTimer = setTimeout(() => {
+            tooltip = showTooltip(thisItem, ticker);
+        }, showDelay);
+    });
+
+    $("body").on("mouseleave", insideFrameSelector, (event) => {
+        clearTimeout(openTimer);
+
+        closeTimer = setTimeout(() => {
+            $(tooltip).remove();
+        }, hideDelay);
     });
 }
 
-function setupTooltips(items) {
-    getPrices(() => addEventListenersToItems(items));
+function setupTooltips() {
+    getPrices(() => bindEventListeners());
 }
 
 function monitorOnElementCreated(selector, callback, onlyOnce = true) {
@@ -281,13 +284,7 @@ function addStyle(styleString) {
 }
 
 function waitForApexLoad() {
-    getPrices(() => {});
-    const insideFrameSelector = ".ColoredIcon__container___djaR4r2";
-    monitorOnElementCreated(
-        insideFrameSelector,
-        (items) => setTimeout(() => setupTooltips(items), 100),
-        false
-    );
+    setupTooltips();
 
     const onLoad = () => {
         addStyle(styles);

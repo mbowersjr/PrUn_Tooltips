@@ -1,12 +1,17 @@
 // ==UserScript==
-// @name         PrUn Tooltips by Rynx (Modified)
+// @name         PrUn Tooltips (Modified)
 // @namespace    http://tampermonkey.net/
-// @version      2.1
-// @description  Adds FIO powered market tooltips to Apex console
-// @author       Manderius (Rynx), inspired by Tim Davis (binarygod, @timthedevguy), and modified by Booers
+// @version      2024-01-12_10-49
+// @description  Adds FIO powered market tooltips to Prosperous Universe
+// @author       Booers, based on work by Manderius (Rynx)
+// @homepageURL  https://github.com/mbowersjr/PrUn_Tooltips
+// @supportURL   https://github.com/mbowersjr/PrUn_Tooltips/issues
+// @source       https://github.com/mbowersjr/PrUn_Tooltips
 // @match        https://apex.prosperousuniverse.com/
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.7.1.min.js#sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=
+// @downloadURL  https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
+// @updateURL    https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
 // ==/UserScript==
 
 let $ = jQuery;

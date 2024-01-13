@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name         PrUn Tooltips (Modified)
 // @namespace    http://tampermonkey.net/
-// @version      2024-01-12_10-49
+// @version      2024-01-12_23-57
 // @description  Adds FIO powered market tooltips to Prosperous Universe
 // @author       Booers, based on work by Manderius (Rynx)
-// @homepageURL  https://github.com/mbowersjr/PrUn_Tooltips
-// @supportURL   https://github.com/mbowersjr/PrUn_Tooltips/issues
-// @source       https://github.com/mbowersjr/PrUn_Tooltips
 // @match        https://apex.prosperousuniverse.com/
 // @grant        none
+// @homepageURL  https://github.com/mbowersjr/PrUn_Tooltips
+// @source       https://github.com/mbowersjr/PrUn_Tooltips
+// @downloadURL  https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/dist/tooltips.user.js
+// @updateURL    https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/dist/tooltips.user.js
+// @supportURL   https://github.com/mbowersjr/PrUn_Tooltips/issues
 // @require      https://code.jquery.com/jquery-3.7.1.min.js#sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=
-// @downloadURL  https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
-// @updateURL    https://raw.githubusercontent.com/mbowersjr/PrUn_Tooltips/main/tooltips.user.js
 // ==/UserScript==
+
 
 let $ = jQuery;
 let prices = [];
@@ -363,3 +364,4 @@ function waitForApexLoad() {
     "use strict";
     waitForApexLoad();
 })();
+

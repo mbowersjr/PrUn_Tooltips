@@ -14,7 +14,7 @@ This version is a modified fork of [PrUn_Tooltips](https://github.com/Manderius/
 
 ### Automatic Installation on GitHub
 
-* Go to the [tooltips.user.js](/tooltips.user.js) file in this repository on GitHub
+* Go to the [tooltips.js](/src/tooltips.js) file in this repository on GitHub
 * Click on <kbd>Raw</kbd> at the top right 
 * Tampermonkey _should_ recognize the script and display the installation prompt
 
